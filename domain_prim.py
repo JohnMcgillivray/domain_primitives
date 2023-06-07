@@ -75,7 +75,9 @@ def _create_post_init(cls):
     # create the __post_init__ method if there is any validation code
     if body:
         f = _create_fn("__post_init__", ["self"], body, locals=locals)
-        f.__qualname__ = f"{cls.__qualname__}.{f.__name__}" # ensure __post_init__ named properly
+        f.__qualname__ = (
+            f"{cls.__qualname__}.{f.__name__}"  # ensure __post_init__ named properly
+        )
         setattr(cls, "__post_init__", f)
 
 
@@ -89,7 +91,17 @@ def _remove_validator_defaults(cls):
                 delattr(cls, k)
 
 
-def domain_prim(cls=None, *, kw_only=False, slots=False, weakref_slot=False):
+def domain_prim(
+    cls=None,
+    *,
+    repr=True,
+    eq=True,
+    order=True,
+    match_args=True,
+    kw_only=False,
+    slots=False,
+    weakref_slot=False,
+):
     def decorator(cls):
         # construct the __post_init__ method where validation occurs
         _create_post_init(cls)
@@ -101,11 +113,11 @@ def domain_prim(cls=None, *, kw_only=False, slots=False, weakref_slot=False):
         return dataclass(
             cls,
             init=True,
-            repr=True,
-            eq=True,
-            order=True,
+            repr=repr,
+            eq=eq,
+            order=order,
             frozen=True,
-            match_args=True,
+            match_args=match_args,
             kw_only=kw_only,
             slots=slots,
             weakref_slot=weakref_slot,
