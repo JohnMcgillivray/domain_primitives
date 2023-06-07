@@ -130,19 +130,3 @@ def domain_prim(
 
     # no parenthesis
     return decorator(cls)
-
-
-def test():
-    @domain_prim
-    class Abcd:
-        a: int = Validator(custom_fn=lambda x: x % 2 == 0, field=field(repr=False))
-        b: int = Validator(gt=4, lt=10)
-        c: str = Validator(len_min=3, len_max=10, regex=r"^[a-z]+$")
-        d: list[int] = Validator(len_min=3, len_max=5)
-
-    abcd = Abcd(2, 6, "apple", [1, 2, 4, 5])
-    print(abcd)
-
-
-if __name__ == "__main__":
-    test()
