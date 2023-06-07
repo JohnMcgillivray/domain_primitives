@@ -16,55 +16,42 @@ class Validator:
 def _create_validations(name: str, type: type, validator: Validator):
     body = []
 
-    for k, v in validator.__dict__.items():
-        if v is None:
-            continue
-
-        match k, v:
-            case "check_type", True:
-                # check if the type is correct, for lists can only confirm the value in question is a list
-                # type of list elements is not checked
-                body.append(
-                    (
-                        f"if not isinstance(self.{name}, {type.__name__}):\n"
-                        f"    raise TypeError(f'Expected {type.__name__} but got ' + str(type(self.{name}).__name__))"
-                    )
-                )
-            case "lt", v:
-                body.append(
-                    (f"assert self.{name} < {v}, 'Expected {name} to be less than {v}'")
-                )
-            case "gt", v:
-                body.append(
-                    (
-                        f"assert self.{name} > {v}, 'Expected {name} to be greater than {v}'"
-                    )
-                )
-            case "len_max", v:
-                body.append(
-                    (
-                        f"assert len(self.{name}) <= {v}, 'Expected {name} to have a length no greater than {v}'"
-                    )
-                )
-            case "len_min", v:
-                body.append(
-                    (
-                        f"assert len(self.{name}) >= {v}, 'Expected {name} to have a length no less than {v}'"
-                    )
-                )
-            case "regex", v:
-                body.append(
-                    (
-                        f"assert re.match(r'{v}', self.{name}), 'Expected {name} to match the regex {v}'"
-                    )
-                )
-            case "custom_fn", v:
-                body.append(
-                    (
-                        f"if _{name}_validator_fn(self.{name}) == False:\n"
-                        f"    raise ValueError(f'Expected {name} to pass the custom validator')"
-                    )
-                )
+    if validator.check_type:
+        # check if the type is correct, for lists can only confirm the value in question is a list
+        # type of list elements is not checked
+        body.append(
+            (
+                f"if not isinstance(self.{name}, {type.__name__}):\n"
+                f"    raise TypeError(f'Expected {type.__name__} but got ' + str(type(self.{name}).__name__))"
+            )
+        )
+    if validator.lt is not None:
+        body.append(
+            f"assert self.{name} < {validator.lt}, 'Expected {name} to be less than {validator.lt}'"
+        )
+    if validator.gt is not None:
+        body.append(
+            f"assert self.{name} > {validator.gt}, 'Expected {name} to be greater than {validator.gt}'"
+        )
+    if validator.len_max is not None:
+        body.append(
+            f"assert len(self.{name}) <= {validator.len_max}, 'Expected {name} to have a length no greater than {validator.len_max}'"
+        )
+    if validator.len_min is not None:
+        body.append(
+            f"assert len(self.{name}) >= {validator.len_min}, 'Expected {name} to have a length no less than {validator.len_min}'"
+        )
+    if validator.regex is not None:
+        body.append(
+            f"assert re.match(r'{validator.regex}', self.{name}), 'Expected {name} to match the regex {validator.regex}'"
+        )
+    if validator.custom_fn is not None:
+        body.append(
+            (
+                f"if _{name}_validator_fn(self.{name}) == False:\n"
+                f"    raise ValueError(f'Expected {name} to pass the custom validator')"
+            )
+        )
 
     return body
 
@@ -88,7 +75,7 @@ def _create_post_init(cls):
     # create the __post_init__ method if there is any validation code
     if body:
         f = _create_fn("__post_init__", ["self"], body, locals=locals)
-        f.__qualname__ = f"{cls.__qualname__}.{f.__name__}"
+        f.__qualname__ = f"{cls.__qualname__}.{f.__name__}" # ensure __post_init__ named properly
         setattr(cls, "__post_init__", f)
 
 
@@ -141,9 +128,8 @@ def test():
         c: str = Validator(len_min=3, len_max=10, regex=r"^[a-z]+$")
         d: list[int] = Validator(len_min=3, len_max=5)
 
-    abcd = Abcd(2, 6, "apple", [1,2,4,5])
-    print(type(abcd.d))
-    abcd = Abcd(2, 6, "apple", ['a', 'b', 'c', 'd', 'e'])
+    abcd = Abcd(2, 6, "apple", [1, 2, 4, 5])
+    print(abcd)
 
 
 if __name__ == "__main__":
