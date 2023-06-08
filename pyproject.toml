@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "domain_primitives"
+version = "0.0.1"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [{name = "John McGillivray"},]
+description = "A python library for easily constructing domain primitives"
+classifiers = [
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+
+[project.optional-dependencies]
+dev = ["pytest"]
+
+[project.urls]
+"Homepage" = "https://github.com/JohnMcgillivray/domain_primitives"

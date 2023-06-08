@@ -13,6 +13,29 @@ class Validator:
     field: Field = None
 
 
+def validator(
+    *,
+    check_type: bool = True,
+    lt: float = None,
+    gt: float = None,
+    len_max: int = None,
+    len_min: int = None,
+    regex: str = None,
+    custom_fn: callable = None,
+    field: Field = None,
+):
+    return Validator(
+        check_type=check_type,
+        lt=lt,
+        gt=gt,
+        len_max=len_max,
+        len_min=len_min,
+        regex=regex,
+        custom_fn=custom_fn,
+        field=field,
+    )
+
+
 def _create_validations(name: str, type: type, validator: Validator):
     body = []
 

@@ -1,21 +1,21 @@
 from dataclasses import FrozenInstanceError
-from domain_prim import domain_prim, Validator, field
+from domain_primitives import domain_prim, validator, field
 import pytest
 
 
 @domain_prim(eq=False, order=False, match_args=False)
 class A:
-    a: int = Validator(gt=0, lt=10)
+    a: int = validator(gt=0, lt=10)
 
 
 @domain_prim
 class B:
-    b: str = Validator(len_min=3, len_max=10, regex=r"^[a-z]+$")
+    b: str = validator(len_min=3, len_max=10, regex=r"^[a-z]+$")
 
 
 @domain_prim
 class C:
-    c: list[int] = Validator(len_min=3, len_max=10)
+    c: list[int] = validator(len_min=3, len_max=10)
 
 
 def is_odd(x):
@@ -24,11 +24,11 @@ def is_odd(x):
 
 @domain_prim
 class D:
-    odd: int = Validator(
+    odd: int = validator(
         custom_fn=is_odd, field=field(repr=False, compare=False, hash=False)
     )
-    even: int = Validator(custom_fn=lambda x: x % 2 == 0)
-    keyword: int = Validator(field=field(kw_only=True, default=0))
+    even: int = validator(custom_fn=lambda x: x % 2 == 0)
+    keyword: int = validator(field=field(kw_only=True, default=0))
 
 
 def test_frozen():
