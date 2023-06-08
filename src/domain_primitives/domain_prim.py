@@ -23,7 +23,7 @@ def validator(
     regex: str = None,
     custom_fn: callable = None,
     field: Field = None,
-):
+) -> Validator: 
     return Validator(
         check_type=check_type,
         lt=lt,
@@ -36,7 +36,7 @@ def validator(
     )
 
 
-def _create_validations(name: str, type: type, validator: Validator):
+def _create_validations(name: str, type: type, validator: Validator) -> list[str]:
     body = []
 
     if validator.check_type:
@@ -79,7 +79,7 @@ def _create_validations(name: str, type: type, validator: Validator):
     return body
 
 
-def _create_post_init(cls):
+def _create_post_init(cls) -> None:
     body = []
     locals = {}
 
@@ -104,7 +104,7 @@ def _create_post_init(cls):
         setattr(cls, "__post_init__", f)
 
 
-def _remove_validator_defaults(cls):
+def _remove_validator_defaults(cls) -> None:
     dict = cls.__dict__
     for k, v in dict.copy().items():
         if isinstance(v, Validator):
@@ -117,13 +117,13 @@ def _remove_validator_defaults(cls):
 def domain_prim(
     cls=None,
     *,
-    repr=True,
-    eq=True,
-    order=True,
-    match_args=True,
-    kw_only=False,
-    slots=False,
-    weakref_slot=False,
+    repr: bool = True,
+    eq: bool = True,
+    order: bool = True,
+    match_args: bool = True,
+    kw_only: bool = False,
+    slots: bool = False,
+    weakref_slot: bool = False,
 ):
     def decorator(cls):
         # construct the __post_init__ method where validation occurs
