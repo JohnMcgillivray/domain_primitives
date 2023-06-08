@@ -12,7 +12,7 @@ class Validator:
     custom_fn: callable = None
     field: Field = None
 
-
+# builder function to avoid exposing the Validator class
 def validator(
     *,
     check_type: bool = True,
