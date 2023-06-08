@@ -1,7 +1,7 @@
 from dataclasses import Field, field, dataclass, _create_fn
 
 
-@dataclass(kw_only=True)
+@dataclass(kw_only=True, frozen=True)
 class Validator:
     check_type: bool = True
     lt: float = None
