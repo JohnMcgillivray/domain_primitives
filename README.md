@@ -6,12 +6,12 @@ A python library that provides a quick and convenient syntax for creating domain
 2. Run `pip install .` in the root directory
 
 ## Usage
-```
+```python
 from domain_primitives import domain_prim, validator
 
 @domain_prim
-class Order:
-    quantity: int = validator(gt=0, lt=100)
+class Quantity:
+    value: int = validator(gt=0, lt=100)
 ```
 Declare a domain primitive by decorating a class with `@domain_prim`. All dataclass options besides `frozen` and `init` may be passed to the decorator to control behavior of the class. The `validator` function is used to declare validation rules for the field, which are checked on each object's instantiation. Options for the validator function are:
 - `check_type`: whether to check the type of the field. True by default.
