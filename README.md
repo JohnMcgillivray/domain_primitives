@@ -22,3 +22,6 @@ Declare a domain primitive by decorating a class with `@domain_prim`. All datacl
 - `regex`: regex pattern to match
 - `custom_fn`: custom function that takes the field value as an argument and returns a boolean
 - `field`: a dataclasses field object
+
+
+To run tests, ensure that `pytest` is installed and run `pytest` in the root directory.
